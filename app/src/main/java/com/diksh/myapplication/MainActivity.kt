@@ -9,6 +9,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,10 +20,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -40,6 +46,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,6 +62,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize()
                 ) {
 
+                    InstagramPage()
 //                    LoginPage()
 
 //                    ContactInfo()
@@ -66,6 +74,8 @@ class MainActivity : ComponentActivity() {
     @Preview(showSystemUi = true)
     @Composable
     fun InstagramPage(){
+
+        var selectedGrid by remember { mutableStateOf(0) }
 
         Box(modifier = Modifier.fillMaxSize()){
 
@@ -151,20 +161,204 @@ class MainActivity : ComponentActivity() {
 
                 Row(modifier = Modifier.padding(20.dp)) {
 
-                    Button(onClick = {}, modifier = Modifier.weight(1f).padding(10.dp)) {
+                    Button(onClick = {}, modifier = Modifier
+                        .weight(1f)
+                        .padding(10.dp)) {
                         Text("Edit Profile")
                     }
 
-                    Button(onClick = {}, modifier = Modifier.weight(1f).padding(10.dp)) {
+                    Button(onClick = {}, modifier = Modifier
+                        .weight(1f)
+                        .padding(10.dp)) {
                         Text("Share Profile")
                     }
                 }
 
 
+                ScrollableRow()
+
+                GridButtons(onGridSelected = { selectedGrid = it })
+                    when (selectedGrid) {
+                        0 -> GridPhotos()
+                        1 -> GridPhotos1()
+                        2 -> GridPhotos3()
+                        else -> GridPhotos() // Default to first if needed
+                    }
             }
         }
     }
 
+
+    @Composable
+    fun ScrollableRow(){
+        Row(
+            modifier = Modifier.horizontalScroll(rememberScrollState())
+        ) {
+            repeat(15){
+                Card(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(
+                        text = it.toString(),
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .fillMaxWidth()
+                    )
+                }
+            }
+
+        }
+    }
+
+
+    @Composable
+    fun GridPhotos(){
+        repeat(3) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        repeat(3) {
+                            CircularPhoto(
+                                R.drawable.ic_launcher_background,
+                                contentDescription = "Profile",
+                                modifier = Modifier.padding(2.dp)
+                            )
+                        }
+                    }
+
+            }
+        }
+    }
+
+    @Composable
+    fun GridPhotos1(){
+        repeat(3) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    repeat(3) {
+                        CircularPhoto(
+                            R.drawable.outline_adb_24,
+                            contentDescription = "Profile",
+                            modifier = Modifier.padding(2.dp)
+                        )
+                    }
+                }
+
+            }
+        }
+    }
+
+    @Composable
+    fun GridPhotos3(){
+        repeat(3) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    repeat(3) {
+                        CircularPhoto(
+                            R.drawable.outline_add_24,
+                            contentDescription = "Profile",
+                            modifier = Modifier.padding(2.dp)
+                        )
+                    }
+                }
+
+            }
+        }
+    }
+
+
+    @Composable
+    fun GridButtons(onGridSelected: (Int) -> Unit){
+
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+
+                Button(
+                    onClick = { onGridSelected(0) },
+                    colors = ButtonColors(
+                        Color.Transparent,
+                        contentColor = Color.Black,
+                        disabledContentColor = Color.Gray,
+                        disabledContainerColor = Color.Transparent,
+                    ),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.outline_chat_info_24),
+                        contentDescription = null,
+                        modifier = Modifier.background(
+                            Color.Transparent,
+                            shape = CircleShape
+                        )
+                    )
+                }
+
+                Button(
+                    onClick = { onGridSelected(1) },
+                    colors = ButtonColors(
+                        Color.Transparent,
+                        contentColor = Color.Black,
+                        disabledContentColor = Color.Gray,
+                        disabledContainerColor = Color.Transparent,
+                    ),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.outline_chat_info_24),
+                        contentDescription = null,
+                        modifier = Modifier.background(
+                            Color.Transparent,
+                            shape = CircleShape
+                        )
+                    )
+                }
+
+                Button(
+                    onClick = { onGridSelected(2) },
+                    colors = ButtonColors(
+                        Color.Transparent,
+                        contentColor = Color.Black,
+                        disabledContentColor = Color.Gray,
+                        disabledContainerColor = Color.Transparent,
+                    ),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.outline_chat_info_24),
+                        contentDescription = null,
+                        modifier = Modifier.background(
+                            Color.Transparent,
+                            shape = CircleShape
+                        )
+                    )
+                }
+
+                Button(
+                    onClick = { onGridSelected(3) },
+                    colors = ButtonColors(
+                        Color.Transparent,
+                        contentColor = Color.Black,
+                        disabledContentColor = Color.Gray,
+                        disabledContainerColor = Color.Transparent,
+                    ),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.outline_chat_info_24),
+                        contentDescription = null,
+                        modifier = Modifier.background(
+                            Color.Transparent,
+                            shape = CircleShape
+                        )
+                    )
+                }
+            }
+        }
+    }
     @Composable
     fun LoginPage(){
 
@@ -212,6 +406,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
 
     @Composable
     fun CircularPhoto(imageResource: Int, contentDescription: String?, modifier: Modifier = Modifier) {
